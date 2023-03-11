@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/static/main.css" />
+    <script src="/static/confirm.js" defer></script>
+    <script src="/static/countdown.js" defer></script>
+  </head>
+  <body>
+      {{ range .messages }}
+        <div class="container">
+          <h3>{{ . }}. <a href="/">Dismiss</a>.</h3>
+        </div>
+      {{ end }}
+
+      <form
+        action="/"
+        class="container"
+        method="post"
+        enctype="multipart/form-data"
+        onsubmit="return confirmForm()"
+      >
+        <h2>Upload a file to {{ .hostname }}</h2>
+        <label for="upload" class="upload-label btn">
+          Click here to upload
+          <input type="file" multiple id="upload" name="upload" />
+        </label>
+        <label for="autodelete" class="btn autodelete">
+          <input type="checkbox" name="autodelete" id="autodelete" onchange="document.querySelector('label.autodelete').classList.toggle('checked')">
+          Auto-delete
+        </label>
+        <button type="submit" class="upload-btn btn">Upload</button>
+      </form>
+
+      <div class="container">
+        <h2>Download shared files from {{ .hostname }}</h2>
+        {{ if ne .view "" }}
+          <h4 class="directory"><a href="/">shared files</a> / {{ .view }}</h4>
+        {{ end }}
+        <ol>
+          {{ if eq (len .files) 0 }}
+            <li>
+              nothing here but linux
+            </li>
+          {{ else }}
+            {{ range .files }}
+              {{ if ne .Name ".directory" }}
+                {{ if .IsDir }}
+                  <li class="directory">
+                    <a href="/?view={{ .Path }}">{{ .Name }}</a>
+                    <a class="zip" href="/zip/{{ .Name }}">(download as zip)</a>
+                  </li>
+                {{ else }}
+                  <li>
+                    <a href="/download/{{ .Name }}" target="_blank">{{ .Name }}</a>
+                    {{ if ne .ExpiresIn 0 }}
+                      <span class="countdown-wrapper">(deletes in <span class="countdown">{{ .ExpiresIn }}</span>)</span>
+                    {{ end }}
+                  </li>
+                {{ end }}
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        </ol>
+      </div>
+
+      <div class="container">
+        <h3>Scan this QR code to connect another device that is on the same network:</h3>
+        <img src="/qrcode.png" alt="qr code">
+      </div>
+  </body>
+</html>
