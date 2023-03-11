@@ -13,7 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var AutoDeleteMap map[string]int = map[string]int{}
+var (
+	DeleteTimeout                = 60 * 5
+	AutoDeleteMap map[string]int = map[string]int{}
+)
 
 func HandlerIndex(c *gin.Context) {
 	RetPage(c, []string{})
@@ -41,7 +44,7 @@ func HandlerUpload(c *gin.Context) {
 
 		messages = append(messages, fmt.Sprintf("'%s' was uploaded successfully", filename))
 		if len(autodelete) > 0 && autodelete[0] == "on" {
-			AutoDeleteMap[filename] = 60 * 1
+			AutoDeleteMap[filename] = DeleteTimeout
 		}
 
 		go func() {
