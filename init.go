@@ -45,6 +45,7 @@ func init() {
 	if err != nil {
 		panic("failed to get local ip address")
 	}
+    fmt.Printf("Starting server on %s:%s.\n", IP, Port)
 
 	// generate qr code
 	err = QREncode(fmt.Sprintf("http://%s:%s/", IP, Port))
