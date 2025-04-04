@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,5 +21,6 @@ func main() {
 	r.GET("/download/:path", HandlerDownload)
 	r.GET("/zip/:path", HandlerZip)
 
-	r.Run(":" + Port)
+	fmt.Printf("Starting server on %s:%s.\n", Config.IP, Config.Port)
+	r.Run(":" + Config.Port)
 }

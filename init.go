@@ -3,7 +3,6 @@ package main
 import (
 	"embed"
 	"fmt"
-	"html/template"
 	"io/fs"
 	"net/http"
 	"os"
@@ -17,11 +16,7 @@ var StaticFiles embed.FS
 var StaticFS http.FileSystem
 
 var (
-	Port      string = "1234"
-	Hostname  string
-	IP        string
 	SharedDir string
-	Template  *template.Template
 )
 
 func init() {
@@ -33,30 +28,10 @@ func init() {
 		}
 	}
 
-	// get hostname
-	var err error
-	Hostname, err = os.Hostname()
-	if err != nil {
-		Hostname = "unknown-pc"
-	}
-
-	// get ip
-	IP, err = GetLocalIP()
-	if err != nil {
-		panic("failed to get local ip address")
-	}
-    fmt.Printf("Starting server on %s:%s.\n", IP, Port)
-
 	// generate qr code
-	err = QREncode(fmt.Sprintf("http://%s:%s/", IP, Port))
+	err := QREncode(fmt.Sprintf("http://%s:%s/", Config.IP, Config.Port))
 	if err != nil {
 		panic("failed to create qr code")
-	}
-
-	// load html template
-	Template, err = LoadTemplate()
-	if err != nil {
-		panic("failed to load html template")
 	}
 
 	// strip prefix from static fs

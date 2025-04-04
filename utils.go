@@ -131,8 +131,8 @@ func LoadTemplate() (*template.Template, error) {
 }
 
 func RetPage(c *gin.Context, messages []string) {
-	Template.Execute(c.Writer, gin.H{
-		"hostname": Hostname,
+	Config.Template.Execute(c.Writer, gin.H{
+		"hostname": Config.Hostname,
 		"messages": messages,
 		"view":     c.Request.URL.Query().Get("view"),
 		"files":    GetSharedFiles(c.Request.URL.Query().Get("view")),
